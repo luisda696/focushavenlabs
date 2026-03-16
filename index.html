@@ -84,6 +84,263 @@ cursor: auto !important;
 }
 }
 /* ============================================
+LOADER STYLES
+============================================ */
+#loader {
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+background: radial-gradient(ellipse at center, #0a0f1a 0%, #02040a 100%);
+display: flex;
+align-items: center;
+justify-content: center;
+z-index: 999999;
+transition: opacity 1s ease-out, visibility 1s ease-out;
+overflow: hidden;
+}
+#loader.hidden {
+opacity: 0;
+visibility: hidden;
+pointer-events: none;
+}
+.loader-galaxy {
+position: absolute;
+width: 100%;
+height: 100%;
+overflow: hidden;
+}
+.galaxy-ring {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+border-radius: 50%;
+border: 1px solid rgba(79, 195, 247, 0.3);
+animation: galaxy-spin linear infinite;
+}
+.galaxy-ring-1 {
+width: 200px;
+height: 200px;
+border-color: rgba(79, 195, 247, 0.2);
+animation-duration: 8s;
+}
+.galaxy-ring-2 {
+width: 350px;
+height: 350px;
+border-color: rgba(79, 195, 247, 0.15);
+animation-duration: 12s;
+animation-direction: reverse;
+}
+.galaxy-ring-3 {
+width: 500px;
+height: 500px;
+border-color: rgba(79, 195, 247, 0.1);
+animation-duration: 16s;
+}
+.galaxy-ring-4 {
+width: 700px;
+height: 700px;
+border-color: rgba(79, 195, 247, 0.05);
+animation-duration: 20s;
+animation-direction: reverse;
+}
+@keyframes galaxy-spin {
+0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.1); }
+100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
+}
+.galaxy-particle {
+position: absolute;
+width: 3px;
+height: 3px;
+background: #4fc3f7;
+border-radius: 50%;
+box-shadow: 0 0 10px #4fc3f7, 0 0 20px #4fc3f7;
+animation: particle-float linear infinite;
+}
+@keyframes particle-float {
+0% {
+opacity: 0;
+transform: translate(0, 0) scale(0);
+}
+20% {
+opacity: 1;
+transform: translate(var(--tx), var(--ty)) scale(1);
+}
+80% {
+opacity: 1;
+}
+100% {
+opacity: 0;
+transform: translate(calc(var(--tx) * 1.5), calc(var(--ty) * 1.5)) scale(0.5);
+}
+}
+.galaxy-center-glow {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 300px;
+height: 300px;
+background: radial-gradient(circle, rgba(79, 195, 247, 0.4) 0%, rgba(79, 195, 247, 0.1) 40%, transparent 70%);
+border-radius: 50%;
+filter: blur(40px);
+animation: center-pulse 3s ease-in-out infinite;
+}
+@keyframes center-pulse {
+0%, 100% {
+opacity: 0.5;
+transform: translate(-50%, -50%) scale(0.9);
+}
+50% {
+opacity: 1;
+transform: translate(-50%, -50%) scale(1.2);
+}
+}
+.loader-content {
+position: relative;
+z-index: 10;
+text-align: center;
+}
+.loader-title {
+font-family: 'Space Grotesk', sans-serif;
+font-size: 28px;
+font-weight: 700;
+letter-spacing: 8px;
+color: #e3f2fd;
+text-transform: uppercase;
+position: relative;
+display: inline-block;
+}
+@media (min-width: 640px) {
+.loader-title {
+font-size: 42px;
+letter-spacing: 12px;
+}
+}
+@media (min-width: 768px) {
+.loader-title {
+font-size: 56px;
+letter-spacing: 16px;
+}
+}
+.loader-title::before {
+content: 'FOCUSHAVENLABS';
+position: absolute;
+top: 0;
+left: 0;
+background: linear-gradient(90deg, #4fc3f7, #ffffff, #4fc3f7);
+background-size: 200% auto;
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+animation: title-shimmer 2s linear infinite;
+}
+@keyframes title-shimmer {
+0% { background-position: 0% center; }
+100% { background-position: 200% center; }
+}
+.loader-subtitle {
+font-family: 'JetBrains Mono', monospace;
+font-size: 10px;
+color: #90a4ae;
+letter-spacing: 4px;
+margin-top: 16px;
+text-transform: uppercase;
+}
+@media (min-width: 640px) {
+.loader-subtitle {
+font-size: 12px;
+margin-top: 20px;
+}
+}
+.loader-progress {
+width: 200px;
+height: 2px;
+background: rgba(79, 195, 247, 0.2);
+border-radius: 2px;
+margin: 24px auto 0;
+overflow: hidden;
+position: relative;
+}
+@media (min-width: 640px) {
+.loader-progress {
+width: 300px;
+margin-top: 32px;
+}
+}
+.loader-progress-bar {
+height: 100%;
+background: linear-gradient(90deg, transparent, #4fc3f7, #ffffff, #4fc3f7, transparent);
+background-size: 200% 100%;
+animation: progress-load 10s linear forwards;
+box-shadow: 0 0 20px rgba(79, 195, 247, 0.6);
+}
+@keyframes progress-load {
+0% {
+width: 0%;
+background-position: 0% center;
+}
+100% {
+width: 100%;
+background-position: 200% center;
+}
+}
+.loader-status {
+font-family: 'JetBrains Mono', monospace;
+font-size: 9px;
+color: #4fc3f7;
+margin-top: 12px;
+letter-spacing: 2px;
+text-transform: uppercase;
+}
+@media (min-width: 640px) {
+.loader-status {
+font-size: 10px;
+margin-top: 16px;
+}
+}
+.loader-status span {
+animation: status-blink 1s ease-in-out infinite;
+}
+@keyframes status-blink {
+0%, 100% { opacity: 1; }
+50% { opacity: 0.4; }
+}
+/* Light burst effect at end */
+.light-burst {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 10px;
+height: 10px;
+background: radial-gradient(circle, #ffffff 0%, #4fc3f7 50%, transparent 70%);
+border-radius: 50%;
+opacity: 0;
+}
+.loader.ending .light-burst {
+animation: burst-expand 1.5s ease-out forwards;
+animation-delay: 9s;
+}
+@keyframes burst-expand {
+0% {
+opacity: 0;
+width: 10px;
+height: 10px;
+}
+20% {
+opacity: 1;
+}
+100% {
+opacity: 0;
+width: 2000px;
+height: 2000px;
+}
+}
+/* ============================================
 CURSOR
 ============================================ */
 #cursor {
@@ -627,13 +884,11 @@ background-size: 250% auto;
 background-clip: text;
 animation: text-shimmer 5s ease-in-out infinite;
 }
-
 @keyframes text-shimmer {
 0% { background-position: 0% 50%; }
 50% { background-position: 100% 50%; }
 100% { background-position: 0% 50%; }
 }
-
 .shimmer-title.delay-shimmer-1 {
 animation-delay: 0s;
 }
@@ -643,7 +898,6 @@ animation-delay: 1.6s;
 .shimmer-title.delay-shimmer-3 {
 animation-delay: 3.2s;
 }
-
 .section-divider {
 width: 60px;
 height: 1px;
@@ -722,9 +976,69 @@ max-height: 300px;
 min-height: 44px;
 }
 }
+/* ============================================
+PRICE TAG STYLES
+============================================ */
+.price-tag {
+display: inline-flex;
+align-items: baseline;
+gap: 4px;
+padding: 8px 16px;
+background: rgba(79, 195, 247, 0.08);
+border: 1px solid rgba(79, 195, 247, 0.2);
+border-radius: 12px;
+margin-bottom: 16px;
+}
+@media (min-width: 768px) {
+.price-tag {
+padding: 10px 20px;
+margin-bottom: 20px;
+}
+}
+.price-currency {
+font-family: 'JetBrains Mono', monospace;
+font-size: 14px;
+color: #90a4ae;
+}
+@media (min-width: 768px) {
+.price-currency {
+font-size: 16px;
+}
+}
+.price-amount {
+font-family: 'Space Grotesk', sans-serif;
+font-size: 28px;
+font-weight: 700;
+color: #4fc3f7;
+text-shadow: 0 0 20px rgba(79, 195, 247, 0.4);
+}
+@media (min-width: 768px) {
+.price-amount {
+font-size: 36px;
+}
+}
 </style>
 </head>
 <body class="antialiased">
+<!-- LOADER -->
+<div id="loader">
+<div class="loader-galaxy">
+<div class="galaxy-ring galaxy-ring-1"></div>
+<div class="galaxy-ring galaxy-ring-2"></div>
+<div class="galaxy-ring galaxy-ring-3"></div>
+<div class="galaxy-ring galaxy-ring-4"></div>
+<div class="galaxy-center-glow"></div>
+<div class="light-burst"></div>
+</div>
+<div class="loader-content">
+<h1 class="loader-title">FOCUSHAVENLABS</h1>
+<p class="loader-subtitle">Initializing System Core</p>
+<div class="loader-progress">
+<div class="loader-progress-bar"></div>
+</div>
+<p class="loader-status"><span>●</span> Loading Modules...</p>
+</div>
+</div>
 <!-- Background -->
 <div class="star-field" id="star-field">
 <div class="stars-layer" id="stars-layer"></div>
@@ -732,7 +1046,6 @@ min-height: 44px;
 <div class="glow-orb glow-orb-1"></div>
 <div class="glow-orb glow-orb-2"></div>
 <div id="cursor"></div>
-
 <!-- Toast Notification -->
 <div id="toast" class="toast">
 <svg class="w-5 h-5 toast-icon flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -740,7 +1053,6 @@ min-height: 44px;
 </svg>
 <span id="toast-message" class="text-sm" style="color: #e3f2fd;">Mensaje</span>
 </div>
-
 <!-- Navigation -->
 <nav class="fixed w-full z-50 glass-nav transition-all duration-300" id="navbar">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
@@ -769,7 +1081,6 @@ FOCUS<span style="color: #4fc3f7;">HAVEN</span>LABS
 </div>
 </div>
 </nav>
-
 <!-- Hero Section -->
 <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
 <div class="relative z-10 text-center max-w-5xl px-4 sm:px-6">
@@ -795,7 +1106,6 @@ Ver Documentación →
 </div>
 <div class="absolute bottom-0 left-0 w-full h-24 sm:h-32 bg-gradient-to-t from-brand-dark to-transparent z-20"></div>
 </section>
-
 <!-- System Section - STAIRCASE INFOGRAPHIC -->
 <section id="system" class="py-16 sm:py-20 md:py-24 relative z-10">
 <div class="max-w-5xl mx-auto px-4 sm:px-6">
@@ -804,14 +1114,11 @@ Ver Documentación →
 <p class="text-brand-gray text-base sm:text-lg max-w-3xl mx-auto px-2">Tu IA + Nuestra Estructura = Código sin iteraciones frustrantes</p>
 <div class="section-divider"></div>
 </div>
-
 <!-- Escalera de 4 niveles -->
 <div class="relative reveal delay-200">
 <!-- Línea conectora diagonal -->
 <div class="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-brand-cyan/30 to-transparent transform -translate-y-1/2 z-0"></div>
-
 <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-6 relative z-10">
-
 <!-- Nivel 1: Base -->
 <div class="flex-1 md:transform md:translate-y-0">
 <div class="bg-brand-navy/60 border border-brand-cyan/20 rounded-lg p-4 sm:p-5 backdrop-blur-sm hover:border-brand-cyan/40 transition-all">
@@ -822,7 +1129,6 @@ Ver Documentación →
 <p class="text-brand-gray text-xs sm:text-sm leading-snug">Verificamos tu clave de acceso activa en el sistema.</p>
 </div>
 </div>
-
 <!-- Nivel 2: Subiendo -->
 <div class="flex-1 md:transform md:-translate-y-8">
 <div class="bg-brand-navy/60 border border-brand-cyan/20 rounded-lg p-4 sm:p-5 backdrop-blur-sm hover:border-brand-cyan/40 transition-all">
@@ -833,7 +1139,6 @@ Ver Documentación →
 <p class="text-brand-gray text-xs sm:text-sm leading-snug">Wizard de 15-50 preguntas estructuradas que definen tu proyecto técnico.</p>
 </div>
 </div>
-
 <!-- Nivel 3: Más alto -->
 <div class="flex-1 md:transform md:-translate-y-16">
 <div class="bg-brand-navy/60 border border-brand-cyan/20 rounded-lg p-4 sm:p-5 backdrop-blur-sm hover:border-brand-cyan/40 transition-all">
@@ -844,7 +1149,6 @@ Ver Documentación →
 <p class="text-brand-gray text-xs sm:text-sm leading-snug">Copias nuestro prompt final en tu GPT/Claude/Qwen con tu API key.</p>
 </div>
 </div>
-
 <!-- Nivel 4: Cima -->
 <div class="flex-1 md:transform md:-translate-y-24">
 <div class="bg-brand-navy/60 border border-brand-cyan/30 rounded-lg p-4 sm:p-5 backdrop-blur-sm hover:border-brand-cyan/50 transition-all shadow-lg shadow-brand-cyan/10">
@@ -855,10 +1159,8 @@ Ver Documentación →
 <p class="text-brand-gray text-xs sm:text-sm leading-snug">Descargas, pruebas, modificas. Tú decides si funciona para ti.</p>
 </div>
 </div>
-
 </div>
 </div>
-
 <!-- Nota debajo -->
 <div class="mt-10 sm:mt-12 text-center reveal delay-300">
 <p class="text-brand-gray text-xs sm:text-sm max-w-2xl mx-auto px-4">
@@ -867,7 +1169,6 @@ No generamos código mágicamente. Te damos la estructura completa para que tu I
 </div>
 </div>
 </section>
-
 <!-- Generators Section -->
 <section id="generators" class="py-16 sm:py-20 md:py-24 relative z-10">
 <div class="max-w-7xl mx-auto px-4 sm:px-6">
@@ -894,6 +1195,10 @@ No generamos código mágicamente. Te damos la estructura completa para que tu I
 <div class="absolute top-3 right-3 sm:top-4 sm:right-4 glass-panel px-2 sm:px-3 py-1 rounded-lg text-xs font-mono text-brand-cyan border-brand-cyan/20" style="z-index:25;">BOT_GEN_V1</div>
 </div>
 <div class="p-4 sm:p-6">
+<div class="price-tag">
+<span class="price-currency">USD</span>
+<span class="price-amount">257</span>
+</div>
 <h3 class="font-display text-xl sm:text-2xl font-bold mb-2" style="color: #e3f2fd;">Forex/Crypto Bot</h3>
 <p class="text-brand-gray text-sm mb-4 sm:mb-6">Algoritmos de trading orgánico que se adaptan a las corrientes del mercado.</p>
 <div class="bg-brand-navy/50 rounded-lg p-3 sm:p-4 font-mono text-xs border border-white/5 mb-4 sm:mb-6 overflow-x-auto">
@@ -925,6 +1230,10 @@ No generamos código mágicamente. Te damos la estructura completa para que tu I
 <div class="absolute top-3 right-3 sm:top-4 sm:right-4 glass-panel px-2 sm:px-3 py-1 rounded-lg text-xs font-mono text-brand-cyan border-brand-cyan/20" style="z-index:25;">PREDICT_AI_V2</div>
 </div>
 <div class="p-4 sm:p-6">
+<div class="price-tag">
+<span class="price-currency">USD</span>
+<span class="price-amount">297</span>
+</div>
 <h3 class="font-display text-xl sm:text-2xl font-bold mb-2" style="color: #e3f2fd;">Polymarket AI</h3>
 <p class="text-brand-gray text-sm mb-4 sm:mb-6">Predicción de eventos de mercado con análisis de sentimiento en tiempo real.</p>
 <div class="bg-brand-navy/50 rounded-lg p-3 sm:p-4 font-mono text-xs border border-white/5 mb-4 sm:mb-6 overflow-x-auto">
@@ -957,6 +1266,10 @@ No generamos código mágicamente. Te damos la estructura completa para que tu I
 <div class="absolute top-3 right-3 sm:top-4 sm:right-4 glass-panel px-2 sm:px-3 py-1 rounded-lg text-xs font-mono text-brand-cyan border-brand-cyan/20" style="z-index:25;">SYNTH_GEN_V3</div>
 </div>
 <div class="p-4 sm:p-6">
+<div class="price-tag">
+<span class="price-currency">USD</span>
+<span class="price-amount">57</span>
+</div>
 <h3 class="font-display text-xl sm:text-2xl font-bold mb-2" style="color: #e3f2fd;">Synthetic Avatar</h3>
 <p class="text-brand-gray text-sm mb-4 sm:mb-6">Generación de identidades digitales procedurales para entornos VR/AR.</p>
 <div class="bg-brand-navy/50 rounded-lg p-3 sm:p-4 font-mono text-xs border border-white/5 mb-4 sm:mb-6 overflow-x-auto">
@@ -974,7 +1287,6 @@ No generamos código mágicamente. Te damos la estructura completa para que tu I
 </div>
 </div>
 </section>
-
 <!-- FAQ Section -->
 <section id="faq" class="py-16 sm:py-20 md:py-24 relative z-10">
 <div class="max-w-3xl mx-auto px-4 sm:px-6">
@@ -982,9 +1294,7 @@ No generamos código mágicamente. Te damos la estructura completa para que tu I
 <h2 class="font-display text-3xl sm:text-4xl font-bold mb-4 shimmer-title">Preguntas Frecuentes</h2>
 <div class="section-divider"></div>
 </div>
-
 <div class="space-y-3 sm:space-y-4 reveal delay-100">
-
 <!-- FAQ 1 -->
 <div class="glass-panel rounded-lg overflow-hidden">
 <div class="p-4 sm:p-5 cursor-pointer hover:bg-brand-cyan/5 transition-colors" onclick="toggleFaqStatic(this)">
@@ -999,7 +1309,6 @@ No es una plataforma que "hace todo por ti". Es un sistema de arquitectura técn
 </p>
 </div>
 </div>
-
 <!-- FAQ 2 -->
 <div class="glass-panel rounded-lg overflow-hidden">
 <div class="p-4 sm:p-5 cursor-pointer hover:bg-brand-cyan/5 transition-colors" onclick="toggleFaqStatic(this)">
@@ -1014,7 +1323,6 @@ Porque el procesamiento ocurre en tu cuenta de OpenAI, Anthropic o similar, no e
 </p>
 </div>
 </div>
-
 <!-- FAQ 3 -->
 <div class="glass-panel rounded-lg overflow-hidden">
 <div class="p-4 sm:p-5 cursor-pointer hover:bg-brand-cyan/5 transition-colors" onclick="toggleFaqStatic(this)">
@@ -1029,7 +1337,6 @@ Porque el procesamiento ocurre en tu cuenta de OpenAI, Anthropic o similar, no e
 </p>
 </div>
 </div>
-
 <!-- FAQ 4 -->
 <div class="glass-panel rounded-lg overflow-hidden">
 <div class="p-4 sm:p-5 cursor-pointer hover:bg-brand-cyan/5 transition-colors" onclick="toggleFaqStatic(this)">
@@ -1044,7 +1351,6 @@ En tu navegador, mediante tu conexión directa a la API de tu proveedor de IA. N
 </p>
 </div>
 </div>
-
 <!-- FAQ 5 -->
 <div class="glass-panel rounded-lg overflow-hidden">
 <div class="p-4 sm:p-5 cursor-pointer hover:bg-brand-cyan/5 transition-colors" onclick="toggleFaqStatic(this)">
@@ -1059,7 +1365,6 @@ Cada generador requiere una clave única para desbloquear el módulo. Contacta c
 </p>
 </div>
 </div>
-
 <!-- FAQ 6 -->
 <div class="glass-panel rounded-lg overflow-hidden">
 <div class="p-4 sm:p-5 cursor-pointer hover:bg-brand-cyan/5 transition-colors" onclick="toggleFaqStatic(this)">
@@ -1074,11 +1379,9 @@ Absolutamente. El código es 100% tuyo una vez generado. Puedes editarlo, compil
 </p>
 </div>
 </div>
-
 </div>
 </div>
 </section>
-
 <!-- Contact Section -->
 <section id="contact" class="py-16 sm:py-20 md:py-24 relative z-10">
 <div class="max-w-3xl mx-auto px-4 sm:px-6">
@@ -1109,7 +1412,6 @@ Transmitir Datos
 </div>
 </div>
 </section>
-
 <!-- Footer -->
 <footer class="py-10 sm:py-12 border-t border-white/5 relative z-10 bg-brand-dark">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6">
@@ -1129,7 +1431,6 @@ FOCUS<span style="color: #4fc3f7;">HAVEN</span>LABS
 </div>
 </div>
 </footer>
-
 <!-- Key Modal -->
 <div id="key-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
 <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeKeyModal()"></div>
@@ -1159,7 +1460,6 @@ Desbloquear Módulo
 </div>
 </div>
 </div>
-
 <!-- Generation Modal -->
 <div id="gen-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
 <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeGenModal()"></div>
@@ -1189,16 +1489,50 @@ Copiar Código
 </div>
 </div>
 </div>
-
 <script>
 // ============================================
-// INIT ON PAGE LOAD
+// LOADER INITIALIZATION
 // ============================================
-document.addEventListener('DOMContentLoaded', function() {
+function initLoader() {
+const loader = document.getElementById('loader');
+const loaderParticles = document.querySelector('.loader-galaxy');
+
+// Create galaxy particles
+for (let i = 0; i < 50; i++) {
+const particle = document.createElement('div');
+particle.classList.add('galaxy-particle');
+const angle = (i / 50) * Math.PI * 2;
+const distance = 100 + Math.random() * 300;
+const tx = Math.cos(angle) * distance;
+const ty = Math.sin(angle) * distance;
+particle.style.setProperty('--tx', tx + 'px');
+particle.style.setProperty('--ty', ty + 'px');
+particle.style.left = '50%';
+particle.style.top = '50%';
+particle.style.animationDelay = (Math.random() * 3) + 's';
+particle.style.animationDuration = (3 + Math.random() * 4) + 's';
+if (loaderParticles) loaderParticles.appendChild(particle);
+}
+
+// Hide loader after 10 seconds
+setTimeout(function() {
+loader.classList.add('ending');
+setTimeout(function() {
+loader.classList.add('hidden');
+document.body.style.overflow = '';
 initStars();
 initReveal();
 initCursor();
 initNavbar();
+}, 1500);
+}, 10000);
+}
+
+// ============================================
+// INIT ON PAGE LOAD
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+initLoader();
 });
 
 // ============================================
@@ -1220,7 +1554,6 @@ toast.classList.remove('show', type);
 // CURSOR
 // ============================================
 function initCursor() {
-// Only init cursor on non-touch devices
 if (window.matchMedia('(pointer: fine)').matches) {
 const cursorEl = document.getElementById('cursor');
 if (cursorEl) {
@@ -1275,10 +1608,7 @@ function initStars() {
 const container = document.getElementById('stars-layer');
 if (!container) return;
 if (container.children.length > 0) return;
-
-// Reduce stars on mobile
 const starCount = window.innerWidth < 768 ? 100 : 180;
-
 for (let i = 0; i < starCount; i++) {
 const star = document.createElement('div');
 star.classList.add('star');
@@ -1331,16 +1661,12 @@ const container = element.parentElement;
 const content = container.querySelector('.faq-content');
 const chevron = container.querySelector('.faq-chevron');
 const isHidden = content.classList.contains('hidden');
-
-// Cerrar todos los demás
 document.querySelectorAll('.faq-content').forEach(function(el) {
 el.classList.add('hidden');
 });
 document.querySelectorAll('.faq-chevron').forEach(function(el) {
 el.classList.remove('rotate-180');
 });
-
-// Abrir el actual si estaba cerrado
 if (isHidden) {
 content.classList.remove('hidden');
 chevron.classList.add('rotate-180');
@@ -1357,7 +1683,6 @@ const MODULE_KEYS = {
 'poly': 'POLY-BETA-99',
 'avatar': 'AVATAR-GAMMA-11'
 };
-
 function openKeyModal(module) {
 currentModule = module;
 const names = {
@@ -1381,13 +1706,11 @@ setTimeout(function() {
 if (keyInput) keyInput.focus();
 }, 100);
 }
-
 function closeKeyModal() {
 const keyModal = document.getElementById('key-modal');
 if (keyModal) keyModal.classList.add('hidden');
 document.body.style.overflow = '';
 }
-
 function validateKey() {
 const input = document.getElementById('key-input').value.trim();
 const statusEl = document.getElementById('key-status');
@@ -1413,7 +1736,6 @@ showToast('Clave inválida. Contacta con soporte.', 'error');
 }
 }, 1500);
 }
-
 function unlockModule(module) {
 const card = document.getElementById('card-' + module);
 const badge = document.getElementById('badge-' + module);
@@ -1446,7 +1768,6 @@ genModal.classList.remove('hidden');
 document.body.style.overflow = 'hidden';
 }
 }
-
 function closeGenModal() {
 const genModal = document.getElementById('gen-modal');
 if (genModal) {
@@ -1454,7 +1775,6 @@ genModal.classList.add('hidden');
 document.body.style.overflow = '';
 }
 }
-
 function simulateGeneration() {
 const output = document.getElementById('code-output');
 if (!output) return;
@@ -1501,17 +1821,16 @@ setTimeout(addLine, 200);
 }
 addLine();
 }
-
 function copyCode() {
 const code = `import { TradingEngine } from "@focushaven/core";
 const bot = new TradingEngine({
-  strategy: "adaptive_momentum",
-  riskLevel: 0.05,
-  apiEndpoint: "wss://secure.focushaven.io"
+strategy: "adaptive_momentum",
+riskLevel: 0.05,
+apiEndpoint: "wss://secure.focushaven.io"
 });
 bot.on("signal", (data) => {
-  console.log("New opportunity detected:", data);
-  bot.executeTrade(data);
+console.log("New opportunity detected:", data);
+bot.executeTrade(data);
 });
 bot.start();`;
 navigator.clipboard.writeText(code).then(function() {
