@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>FocusHaven Labs | Generadores de Código</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/index.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@5.0.0/index.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.0.0/index.min.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+colors: {
+brand: {
+dark: '#02040a',
+navy: '#0a0f1a',
+blue: '#0d1525',
+cyan: '#4fc3f7',
+cyanGlow: '#00d4ff',
+white: '#e3f2fd',
+gray: '#90a4ae'
+}
+},
+fontFamily: {
+sans: ['Inter', 'sans-serif'],
+display: ['Space Grotesk', 'sans-serif'],
+mono: ['JetBrains Mono', 'monospace']
+},
+screens: {
+'sm': '640px',
+'md': '768px',
+'lg': '1024px',
+'xl': '1280px',
+'2xl': '1536px'
+}
+}
+}
+}
+</script>
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+-webkit-tap-highlight-color: transparent;
+}
+html {
+scroll-behavior: smooth;
+font-size: 16px;
+}
+@media (max-width: 768px) {
+html {
+font-size: 14px;
+}
+}
+@media (min-width: 1024px) {
+html {
+font-size: 18px;
+}
+}
+body {
+background-color: #02040a;
+color: #e3f2fd;
+overflow-x: hidden;
+cursor: none;
+font-family: 'Inter', sans-serif;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+touch-action: manipulation;
+}
+/* Hide custom cursor on touch devices */
+@media (pointer: coarse) {
+body {
+cursor: auto;
+}
+#cursor {
+display: none;
+}
+* {
+cursor: auto !important;
+}
+}
+/* ============================================
+CURSOR
+============================================ */
+#cursor {
+position: fixed;
+top: 0;
+left: 0;
+width: 8px;
+height: 8px;
+border: 1px solid rgba(79, 195, 247, 0.6);
+border-radius: 50%;
+pointer-events: none;
+z-index: 99999;
+transform: translate(-50%, -50%);
+transition: width 0.3s, height 0.3s, background-color 0.3s, border-color 0.3s;
+mix-blend-mode: screen;
+}
+#cursor.hovered {
+width: 24px;
+height: 24px;
+background-color: rgba(79, 195, 247, 0.1);
+border-color: #4fc3f7;
+box-shadow: 0 0 20px rgba(79, 195, 247, 0.4);
+}
+/* ============================================
+STAR FIELD
+============================================ */
+.star-field {
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+z-index: -3;
+background: radial-gradient(ellipse at center, #0a0f1a 0%, #02040a 100%);
+overflow: hidden;
+}
+.stars-layer {
+position: absolute;
+width: 100%;
+height: 100%;
+}
+.star {
+position: absolute;
+background: #ffffff;
+border-radius: 50%;
+opacity: 0;
+box-shadow: 0 0 4px rgba(79, 195, 247, 0.8);
+}
+.star.visible {
+animation: star-twinkle ease-in-out infinite;
+}
+.star.tiny {
+width: 1px;
+height: 1px;
+}
+.star.small {
+width: 1.5px;
+height: 1.5px;
+}
+.star.medium {
+width: 2px;
+height: 2px;
+}
+.star.bright {
+box-shadow: 0 0 6px 1px rgba(79, 195, 247, 1);
+background: #c8eeff;
+}
+.star.bright.visible {
+animation: star-pulse-bright ease-in-out infinite;
+}
+@keyframes star-twinkle {
+0% { opacity: 0; transform: scale(0.5); }
+20% { opacity: 0.8; transform: scale(1); }
+80% { opacity: 0.8; transform: scale(1); }
+100% { opacity: 0; transform: scale(0.5); }
+}
+@keyframes star-pulse-bright {
+0%, 100% { opacity: 0; transform: scale(0.5); box-shadow: 0 0 2px rgba(79,195,247,0.4); }
+30% { opacity: 1; transform: scale(1.4); box-shadow: 0 0 10px 2px rgba(79,195,247,0.9); }
+70% { opacity: 0.6; transform: scale(1); }
+}
+.glow-orb {
+position: fixed;
+border-radius: 50%;
+filter: blur(100px);
+pointer-events: none;
+z-index: -2;
+opacity: 0.4;
+}
+.glow-orb-1 {
+width: 600px;
+height: 600px;
+background: radial-gradient(circle, rgba(79, 195, 247, 0.15) 0%, transparent 70%);
+top: -10%;
+left: -10%;
+animation: orb-float 20s ease-in-out infinite;
+}
+.glow-orb-2 {
+width: 500px;
+height: 500px;
+background: radial-gradient(circle, rgba(79, 195, 247, 0.1) 0%, transparent 70%);
+bottom: -10%;
+right: -10%;
+animation: orb-float 25s ease-in-out infinite reverse;
+}
+@keyframes orb-float {
+0%, 100% { transform: translate(0, 0) scale(1); }
+50% { transform: translate(30px, -30px) scale(1.1); }
+}
+/* ============================================
+GLASS & UI
+============================================ */
+.glass-panel {
+background: rgba(13, 21, 37, 0.6);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+border: 1px solid rgba(79, 195, 247, 0.08);
+box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+.glass-nav {
+background: rgba(2, 4, 10, 0.8);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+border-bottom: 1px solid rgba(79, 195, 247, 0.05);
+}
+.glass-modal {
+background: rgba(2, 4, 10, 0.95);
+backdrop-filter: blur(32px);
+-webkit-backdrop-filter: blur(32px);
+border: 1px solid rgba(79, 195, 247, 0.1);
+box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+.text-gradient {
+background: linear-gradient(135deg, #4fc3f7 0%, #81d4fa 50%, #e3f2fd 100%);
+background-size: 200% auto;
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+animation: gradient-flow 8s ease infinite;
+}
+@keyframes gradient-flow {
+0%, 100% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+}
+.btn-primary {
+position: relative;
+overflow: hidden;
+background: rgba(79, 195, 247, 0.1);
+border: 1px solid rgba(79, 195, 247, 0.3);
+color: #4fc3f7;
+transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@media (pointer: coarse) {
+.btn-primary {
+cursor: auto;
+}
+}
+.btn-primary:hover {
+background: rgba(79, 195, 247, 0.2);
+border-color: rgba(79, 195, 247, 0.6);
+box-shadow: 0 0 30px rgba(79, 195, 247, 0.2),
+inset 0 0 20px rgba(79, 195, 247, 0.05);
+transform: translateY(-2px);
+}
+.btn-primary:active {
+transform: translateY(0);
+}
+.btn-secondary {
+background: transparent;
+border: 1px solid rgba(227, 242, 253, 0.1);
+color: #90a4ae;
+transition: all 0.3s ease;
+}
+@media (pointer: coarse) {
+.btn-secondary {
+cursor: auto;
+}
+}
+.btn-secondary:hover {
+border-color: rgba(79, 195, 247, 0.4);
+color: #4fc3f7;
+}
+/* ============================================
+SYSTEM CARDS
+============================================ */
+.system-card {
+background: rgba(13, 21, 37, 0.4);
+backdrop-filter: blur(16px);
+border: 1px solid rgba(79, 195, 247, 0.06);
+border-radius: 16px;
+padding: 24px;
+transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+position: relative;
+overflow: hidden;
+}
+@media (min-width: 768px) {
+.system-card {
+padding: 32px;
+}
+}
+.system-card::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+height: 1px;
+background: linear-gradient(90deg, transparent, rgba(79, 195, 247, 0.4), transparent);
+transform: translateX(-100%);
+transition: transform 0.8s ease;
+}
+.system-card:hover::before {
+transform: translateX(100%);
+}
+.system-card:hover {
+transform: translateY(-8px);
+border-color: rgba(79, 195, 247, 0.15);
+box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4),
+0 0 40px rgba(79, 195, 247, 0.08);
+}
+.system-icon-wrapper {
+width: 56px;
+height: 56px;
+border-radius: 16px;
+display: flex;
+align-items: center;
+justify-content: center;
+margin-bottom: 20px;
+background: linear-gradient(135deg, rgba(79, 195, 247, 0.1), rgba(79, 195, 247, 0.02));
+border: 1px solid rgba(79, 195, 247, 0.2);
+transition: all 0.4s ease;
+}
+@media (min-width: 768px) {
+.system-icon-wrapper {
+width: 64px;
+height: 64px;
+margin-bottom: 24px;
+}
+}
+.system-card:hover .system-icon-wrapper {
+transform: scale(1.05);
+box-shadow: 0 0 20px rgba(79, 195, 247, 0.2);
+}
+/* ============================================
+PRODUCT CARDS
+============================================ */
+.product-card {
+background: rgba(13, 21, 37, 0.5);
+border: 1px solid rgba(79, 195, 247, 0.08);
+border-radius: 20px;
+overflow: hidden;
+transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.product-card:hover {
+border-color: rgba(79, 195, 247, 0.2);
+box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
+0 0 60px rgba(79, 195, 247, 0.1);
+transform: translateY(-5px);
+}
+.product-image-container {
+position: relative;
+overflow: hidden;
+height: 220px;
+}
+@media (min-width: 768px) {
+.product-image-container {
+height: 280px;
+}
+}
+.product-image {
+width: 100%;
+height: 100%;
+object-fit: cover;
+animation: img-breathe 7s ease-in-out infinite;
+transform-origin: center center;
+}
+@keyframes img-breathe {
+0%, 100% { transform: scale(1.00) translateY(0px); }
+33% { transform: scale(1.03) translateY(-4px); }
+66% { transform: scale(1.01) translateY(2px); }
+}
+.product-card:hover .product-image {
+animation: none;
+transform: scale(1.06);
+transition: transform 0.8s ease;
+}
+.product-image-container::after {
+content: '';
+position: absolute;
+inset: 0;
+background: repeating-linear-gradient(
+to bottom,
+transparent 0px,
+transparent 3px,
+rgba(79, 195, 247, 0.022) 3px,
+rgba(79, 195, 247, 0.022) 4px
+);
+pointer-events: none;
+z-index: 15;
+animation: scanline-drift 8s linear infinite;
+}
+@keyframes scanline-drift {
+0% { background-position: 0 0; }
+100% { background-position: 0 80px; }
+}
+.image-glow {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 70%;
+height: 70%;
+background: radial-gradient(circle, rgba(79, 195, 247, 0.22) 0%, transparent 70%);
+filter: blur(36px);
+pointer-events: none;
+z-index: 5;
+animation: glow-breathe 5s ease-in-out infinite;
+}
+@keyframes glow-breathe {
+0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.95); }
+50% { opacity: 0.65; transform: translate(-50%, -50%) scale(1.15); }
+}
+.product-vignette {
+position: absolute;
+inset: 0;
+background: radial-gradient(ellipse at center, transparent 45%, rgba(2, 4, 10, 0.55) 100%);
+pointer-events: none;
+z-index: 10;
+}
+.lock-overlay {
+position: absolute;
+inset: 0;
+background: rgba(2, 4, 10, 0.65);
+backdrop-filter: blur(3px);
+display: flex;
+align-items: center;
+justify-content: center;
+z-index: 20;
+transition: opacity 0.5s ease;
+}
+.product-card.unlocked .lock-overlay {
+opacity: 0;
+pointer-events: none;
+}
+.product-badge {
+position: absolute;
+top: 12px;
+left: 12px;
+padding: 5px 10px;
+border-radius: 20px;
+font-size: 9px;
+font-family: 'JetBrains Mono', monospace;
+background: rgba(2, 4, 10, 0.8);
+border: 1px solid rgba(79, 195, 247, 0.3);
+color: #4fc3f7;
+backdrop-filter: blur(8px);
+z-index: 30;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+@media (min-width: 768px) {
+.product-badge {
+top: 16px;
+left: 16px;
+padding: 6px 12px;
+font-size: 10px;
+}
+}
+.badge-dot {
+width: 6px;
+height: 6px;
+border-radius: 50%;
+background: #4fc3f7;
+box-shadow: 0 0 8px #4fc3f7;
+animation: pulse 2s infinite;
+}
+@keyframes pulse {
+0%, 100% { opacity: 1; }
+50% { opacity: 0.4; }
+}
+/* ============================================
+REVEAL ANIMATION
+============================================ */
+.reveal {
+opacity: 0;
+transform: translateY(40px);
+filter: blur(8px);
+transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.active {
+opacity: 1;
+transform: translateY(0);
+filter: blur(0);
+}
+/* ============================================
+MISC UI
+============================================ */
+.input-glass {
+background: rgba(13, 21, 37, 0.6);
+border: 1px solid rgba(79, 195, 247, 0.1);
+color: #e3f2fd;
+transition: all 0.3s ease;
+font-size: 14px;
+}
+@media (min-width: 768px) {
+.input-glass {
+font-size: 16px;
+}
+}
+.input-glass:focus {
+outline: none;
+border-color: rgba(79, 195, 247, 0.4);
+box-shadow: 0 0 20px rgba(79, 195, 247, 0.1);
+}
+.input-glass::placeholder {
+color: #546e7a;
+}
+.generation-window {
+background: rgba(2, 4, 10, 0.98);
+border: 1px solid rgba(79, 195, 247, 0.15);
+box-shadow: 0 0 80px rgba(79, 195, 247, 0.1),
+inset 0 0 80px rgba(0, 0, 0, 0.5);
+}
+.output-area {
+background: rgba(0, 0, 0, 0.5);
+border: 1px solid rgba(79, 195, 247, 0.1);
+border-radius: 12px;
+font-family: 'JetBrains Mono', monospace;
+font-size: 12px;
+line-height: 1.8;
+max-height: 300px;
+overflow-y: auto;
+padding: 16px;
+color: #90a4ae;
+}
+@media (min-width: 768px) {
+.output-area {
+font-size: 13px;
+max-height: 400px;
+padding: 24px;
+}
+}
+.output-area::-webkit-scrollbar {
+width: 6px;
+}
+.output-area::-webkit-scrollbar-track {
+background: rgba(79, 195, 247, 0.05);
+border-radius: 3px;
+}
+.output-area::-webkit-scrollbar-thumb {
+background: rgba(79, 195, 247, 0.2);
+border-radius: 3px;
+}
+.key-status {
+display: flex;
+align-items: center;
+gap: 8px;
+padding: 10px 16px;
+border-radius: 8px;
+font-size: 12px;
+font-family: 'JetBrains Mono', monospace;
+}
+.key-status.valid {
+background: rgba(79, 195, 247, 0.1);
+color: #4fc3f7;
+border: 1px solid rgba(79, 195, 247, 0.3);
+}
+.key-status.invalid {
+background: rgba(239, 83, 80, 0.1);
+color: #ef5350;
+border: 1px solid rgba(239, 83, 80, 0.3);
+}
+.key-status.pending {
+background: rgba(79, 195, 247, 0.05);
+color: #90a4ae;
+border: 1px solid rgba(79, 195, 247, 0.2);
+}
+.spinner {
+width: 32px;
+height: 32px;
+border: 3px solid rgba(79, 195, 247, 0.1);
+border-top-color: #4fc3f7;
+border-radius: 50%;
+animation: spin 1s linear infinite;
+}
+@media (min-width: 768px) {
+.spinner {
+width: 40px;
+height: 40px;
+}
+}
+@keyframes spin {
+to { transform: rotate(360deg); }
+}
+.nav-link {
+position: relative;
+color: #90a4ae;
+transition: color 0.3s ease;
+}
+@media (pointer: coarse) {
+.nav-link {
+cursor: auto;
+}
+}
+.nav-link:hover {
+color: #4fc3f7;
+}
+.nav-link::after {
+content: '';
+position: absolute;
+bottom: -4px;
+left: 0;
+width: 0;
+height: 1px;
+background: #4fc3f7;
+box-shadow: 0 0 10px #4fc3f7;
+transition: width 0.3s ease;
+}
+.nav-link:hover::after {
+width: 100%;
+}
+/* ============================================
+SHIMMER TITLE - TEXT ONLY EFFECT
+============================================ */
+.shimmer-title {
+position: relative;
+display: inline-block;
+background: linear-gradient(
+105deg,
+#e3f2fd 0%,
+#e3f2fd 35%,
+#4fc3f7 45%,
+#ffffff 50%,
+#4fc3f7 55%,
+#e3f2fd 65%,
+#e3f2fd 100%
+);
+background-size: 250% auto;
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+animation: text-shimmer 5s ease-in-out infinite;
+}
+
+@keyframes text-shimmer {
+0% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+100% { background-position: 0% 50%; }
+}
+
+.shimmer-title.delay-shimmer-1 {
+animation-delay: 0s;
+}
+.shimmer-title.delay-shimmer-2 {
+animation-delay: 1.6s;
+}
+.shimmer-title.delay-shimmer-3 {
+animation-delay: 3.2s;
+}
+
+.section-divider {
+width: 60px;
+height: 1px;
+background: linear-gradient(90deg, transparent, #4fc3f7, transparent);
+margin: 24px auto;
+box-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
+}
+/* Modal display fix */
+#key-modal.hidden, #gen-modal.hidden {
+display: none !important;
+}
+#key-modal:not(.hidden), #gen-modal:not(.hidden) {
+display: flex !important;
+}
+/* Selection */
+::selection {
+background-color: #4fc3f7;
+color: #02040a;
+}
+/* Toast Notification */
+.toast {
+position: fixed;
+bottom: 16px;
+right: 16px;
+left: 16px;
+background: rgba(13, 21, 37, 0.95);
+border: 1px solid rgba(79, 195, 247, 0.3);
+border-radius: 12px;
+padding: 14px 20px;
+display: flex;
+align-items: center;
+gap: 12px;
+z-index: 1000;
+transform: translateX(120%);
+transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+max-width: 400px;
+margin-left: auto;
+}
+@media (min-width: 640px) {
+.toast {
+left: auto;
+bottom: 24px;
+right: 24px;
+padding: 16px 24px;
+}
+}
+.toast.show {
+transform: translateX(0);
+}
+.toast.success {
+border-color: rgba(74, 222, 128, 0.3);
+}
+.toast.success .toast-icon {
+color: #4ade80;
+}
+/* FAQ Chevron Rotation */
+.faq-chevron.rotate-180 {
+transform: rotate(180deg);
+}
+/* Mobile menu improvements */
+#mobile-menu {
+max-height: 0;
+overflow: hidden;
+transition: max-height 0.3s ease;
+}
+#mobile-menu:not(.hidden) {
+max-height: 300px;
+}
+/* Touch-friendly spacing */
+@media (pointer: coarse) {
+.btn-primary,
+.btn-secondary,
+.faq-question,
+.nav-link,
+.hoverable {
+min-height: 44px;
+}
+}
+</style>
+</head>
+<body class="antialiased">
+<!-- Background -->
+<div class="star-field" id="star-field">
+<div class="stars-layer" id="stars-layer"></div>
+</div>
+<div class="glow-orb glow-orb-1"></div>
+<div class="glow-orb glow-orb-2"></div>
+<div id="cursor"></div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast">
+<svg class="w-5 h-5 toast-icon flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+</svg>
+<span id="toast-message" class="text-sm" style="color: #e3f2fd;">Mensaje</span>
+</div>
+
+<!-- Navigation -->
+<nav class="fixed w-full z-50 glass-nav transition-all duration-300" id="navbar">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
+<a href="#" class="font-display font-bold text-xl sm:text-2xl tracking-tighter hoverable" style="color: #e3f2fd;">
+FOCUS<span style="color: #4fc3f7;">HAVEN</span>LABS
+</a>
+<div class="hidden md:flex space-x-6 lg:space-x-8 items-center">
+<a href="#system" class="nav-link text-sm font-medium hoverable">Sistema</a>
+<a href="#generators" class="nav-link text-sm font-medium hoverable">Generadores</a>
+<a href="#faq" class="nav-link text-sm font-medium hoverable">FAQ</a>
+<a href="#contact" class="nav-link text-sm font-medium hoverable">Contacto</a>
+</div>
+<button class="md:hidden text-brand-cyan hoverable p-2" onclick="toggleMobileMenu()" aria-label="Menu">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+</svg>
+</button>
+</div>
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="md:hidden hidden glass-nav border-t border-white/5">
+<div class="px-4 sm:px-6 py-4 space-y-3">
+<a href="#system" class="block nav-link text-sm font-medium hoverable py-2" onclick="toggleMobileMenu()">Sistema</a>
+<a href="#generators" class="block nav-link text-sm font-medium hoverable py-2" onclick="toggleMobileMenu()">Generadores</a>
+<a href="#faq" class="block nav-link text-sm font-medium hoverable py-2" onclick="toggleMobileMenu()">FAQ</a>
+<a href="#contact" class="block nav-link text-sm font-medium hoverable py-2" onclick="toggleMobileMenu()">Contacto</a>
+</div>
+</div>
+</nav>
+
+<!-- Hero Section -->
+<section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+<div class="relative z-10 text-center max-w-5xl px-4 sm:px-6">
+<div class="glass-panel inline-block px-4 sm:px-5 py-2 rounded-full mb-6 sm:mb-8 reveal">
+<span class="text-brand-cyan text-xs font-mono tracking-widest uppercase">System Online // v.2.0.4</span>
+</div>
+<h1 class="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-tight mb-4 sm:mb-6 reveal shimmer-title delay-shimmer-1">
+Sistemas de <span class="text-gradient">Generación Ilimitados</span><br>
+para Código de Alto Valor
+</h1>
+<p class="text-brand-gray text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed reveal delay-100 px-2">
+Un laboratorio de código avanzado. Genera bots de trading, predicciones de mercado y avatares sintéticos.
+</p>
+<div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center reveal delay-200 w-full sm:w-auto">
+<button class="btn-primary px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium hoverable flex items-center justify-center gap-2 w-full sm:w-auto text-sm sm:text-base" onclick="document.getElementById('system').scrollIntoView({behavior: 'smooth'})">
+Explorar Sistema
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+</button>
+<button class="btn-secondary px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium hoverable w-full sm:w-auto text-sm sm:text-base" onclick="openKeyModal('forex')">
+Ver Documentación →
+</button>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 w-full h-24 sm:h-32 bg-gradient-to-t from-brand-dark to-transparent z-20"></div>
+</section>
+
+<!-- System Section - STAIRCASE INFOGRAPHIC -->
+<section id="system" class="py-16 sm:py-20 md:py-24 relative z-10">
+<div class="max-w-5xl mx-auto px-4 sm:px-6">
+<div class="text-center mb-12 sm:mb-16 reveal">
+<h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-bold mb-4 shimmer-title delay-shimmer-2">Cómo Funciona</h2>
+<p class="text-brand-gray text-base sm:text-lg max-w-3xl mx-auto px-2">Tu IA + Nuestra Estructura = Código sin iteraciones frustrantes</p>
+<div class="section-divider"></div>
+</div>
+
+<!-- Escalera de 4 niveles -->
+<div class="relative reveal delay-200">
+<!-- Línea conectora diagonal -->
+<div class="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-brand-cyan/30 to-transparent transform -translate-y-1/2 z-0"></div>
+
+<div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-6 relative z-10">
+
+<!-- Nivel 1: Base -->
+<div class="flex-1 md:transform md:translate-y-0">
+<div class="bg-brand-navy/60 border border-brand-cyan/20 rounded-lg p-4 sm:p-5 backdrop-blur-sm hover:border-brand-cyan/40 transition-all">
+<div class="flex items-center gap-2 sm:gap-3 mb-3">
+<span class="w-7 h-7 sm:w-8 sm:h-8 rounded bg-brand-cyan/20 text-brand-cyan font-mono font-bold flex items-center justify-center text-xs sm:text-sm">01</span>
+<h3 class="font-display font-semibold text-brand-white text-base sm:text-lg">Validación</h3>
+</div>
+<p class="text-brand-gray text-xs sm:text-sm leading-snug">Verificamos tu clave de acceso activa en el sistema.</p>
+</div>
+</div>
+
+<!-- Nivel 2: Subiendo -->
+<div class="flex-1 md:transform md:-translate-y-8">
+<div class="bg-brand-navy/60 border border-brand-cyan/20 rounded-lg p-4 sm:p-5 backdrop-blur-sm hover:border-brand-cyan/40 transition-all">
+<div class="flex items-center gap-2 sm:gap-3 mb-3">
+<span class="w-7 h-7 sm:w-8 sm:h-8 rounded bg-brand-cyan/20 text-brand-cyan font-mono font-bold flex items-center justify-center text-xs sm:text-sm">02</span>
+<h3 class="font-display font-semibold text-brand-white text-base sm:text-lg">Especificación</h3>
+</div>
+<p class="text-brand-gray text-xs sm:text-sm leading-snug">Wizard de 15-50 preguntas estructuradas que definen tu proyecto técnico.</p>
+</div>
+</div>
+
+<!-- Nivel 3: Más alto -->
+<div class="flex-1 md:transform md:-translate-y-16">
+<div class="bg-brand-navy/60 border border-brand-cyan/20 rounded-lg p-4 sm:p-5 backdrop-blur-sm hover:border-brand-cyan/40 transition-all">
+<div class="flex items-center gap-2 sm:gap-3 mb-3">
+<span class="w-7 h-7 sm:w-8 sm:h-8 rounded bg-brand-cyan/20 text-brand-cyan font-mono font-bold flex items-center justify-center text-xs sm:text-sm">03</span>
+<h3 class="font-display font-semibold text-brand-white text-base sm:text-lg">Construcción</h3>
+</div>
+<p class="text-brand-gray text-xs sm:text-sm leading-snug">Copias nuestro prompt final en tu GPT/Claude/Qwen con tu API key.</p>
+</div>
+</div>
+
+<!-- Nivel 4: Cima -->
+<div class="flex-1 md:transform md:-translate-y-24">
+<div class="bg-brand-navy/60 border border-brand-cyan/30 rounded-lg p-4 sm:p-5 backdrop-blur-sm hover:border-brand-cyan/50 transition-all shadow-lg shadow-brand-cyan/10">
+<div class="flex items-center gap-2 sm:gap-3 mb-3">
+<span class="w-7 h-7 sm:w-8 sm:h-8 rounded bg-brand-cyan text-brand-dark font-mono font-bold flex items-center justify-center text-xs sm:text-sm">04</span>
+<h3 class="font-display font-semibold text-brand-white text-base sm:text-lg">Validación</h3>
+</div>
+<p class="text-brand-gray text-xs sm:text-sm leading-snug">Descargas, pruebas, modificas. Tú decides si funciona para ti.</p>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- Nota debajo -->
+<div class="mt-10 sm:mt-12 text-center reveal delay-300">
+<p class="text-brand-gray text-xs sm:text-sm max-w-2xl mx-auto px-4">
+No generamos código mágicamente. Te damos la estructura completa para que tu IA construya exactamente lo que necesitas.
+</p>
+</div>
+</div>
+</section>
+
+<!-- Generators Section -->
+<section id="generators" class="py-16 sm:py-20 md:py-24 relative z-10">
+<div class="max-w-7xl mx-auto px-4 sm:px-6">
+<div class="text-center mb-16 sm:mb-20 reveal">
+<h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-bold mb-4 shimmer-title delay-shimmer-3">Cápsulas de Generación</h2>
+<div class="section-divider"></div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+<!-- 1. FOREX/CRYPTO BOT -->
+<div class="product-card reveal delay-100" id="card-forex">
+<div class="product-badge" id="badge-forex">
+<span class="badge-dot"></span>
+<span>BLOQUEADO</span>
+</div>
+<div class="product-image-container">
+<div class="image-glow"></div>
+<div class="product-vignette"></div>
+<div class="lock-overlay" id="lock-overlay-forex">
+<svg class="w-12 h-12 sm:w-16 sm:h-16 text-brand-cyan/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+</svg>
+</div>
+<img src="https://image.qwenlm.ai/public_source/b001aedb-7ea8-4f99-b814-ee9def08a16e/19f51b821-5b65-4437-acb3-251164c23374.png" alt="Forex Trading Bot" class="product-image" loading="lazy">
+<div class="absolute top-3 right-3 sm:top-4 sm:right-4 glass-panel px-2 sm:px-3 py-1 rounded-lg text-xs font-mono text-brand-cyan border-brand-cyan/20" style="z-index:25;">BOT_GEN_V1</div>
+</div>
+<div class="p-4 sm:p-6">
+<h3 class="font-display text-xl sm:text-2xl font-bold mb-2" style="color: #e3f2fd;">Forex/Crypto Bot</h3>
+<p class="text-brand-gray text-sm mb-4 sm:mb-6">Algoritmos de trading orgánico que se adaptan a las corrientes del mercado.</p>
+<div class="bg-brand-navy/50 rounded-lg p-3 sm:p-4 font-mono text-xs border border-white/5 mb-4 sm:mb-6 overflow-x-auto">
+<span class="text-brand-cyan">const</span> <span class="text-brand-gray">initBot = () => {</span><br>
+<span class="pl-3 sm:pl-4 text-brand-cyan">return</span> <span class="text-brand-gray">analyzeFlow(</span><span class="text-brand-cyan">'BTC/USD'</span><span class="text-brand-gray">);</span><br>
+<span class="text-brand-gray">}</span>
+</div>
+<button class="w-full py-2.5 sm:py-3 rounded-lg btn-secondary font-medium flex items-center justify-center gap-2 hoverable text-sm" onclick="openKeyModal('forex')">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+<span>Introducir Clave</span>
+</button>
+</div>
+</div>
+<!-- 2. POLYMARKET PREDICTION -->
+<div class="product-card reveal delay-200" id="card-poly">
+<div class="product-badge" id="badge-poly">
+<span class="badge-dot"></span>
+<span>BLOQUEADO</span>
+</div>
+<div class="product-image-container">
+<div class="image-glow"></div>
+<div class="product-vignette"></div>
+<div class="lock-overlay" id="lock-overlay-poly">
+<svg class="w-12 h-12 sm:w-16 sm:h-16 text-brand-cyan/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+</svg>
+</div>
+<img src="https://image.qwenlm.ai/public_source/b001aedb-7ea8-4f99-b814-ee9def08a16e/16b96199d-dfc9-4f5b-884d-b3713520dce7.png" alt="Polymarket AI" class="product-image" loading="lazy">
+<div class="absolute top-3 right-3 sm:top-4 sm:right-4 glass-panel px-2 sm:px-3 py-1 rounded-lg text-xs font-mono text-brand-cyan border-brand-cyan/20" style="z-index:25;">PREDICT_AI_V2</div>
+</div>
+<div class="p-4 sm:p-6">
+<h3 class="font-display text-xl sm:text-2xl font-bold mb-2" style="color: #e3f2fd;">Polymarket AI</h3>
+<p class="text-brand-gray text-sm mb-4 sm:mb-6">Predicción de eventos de mercado con análisis de sentimiento en tiempo real.</p>
+<div class="bg-brand-navy/50 rounded-lg p-3 sm:p-4 font-mono text-xs border border-white/5 mb-4 sm:mb-6 overflow-x-auto">
+<span class="text-brand-cyan">await</span> <span class="text-brand-gray">predictOutcome({</span><br>
+<span class="pl-3 sm:pl-4 text-brand-cyan">event</span><span class="text-brand-gray">: </span><span class="text-brand-cyan">'Election2024'</span><span class="text-brand-gray">,</span><br>
+<span class="pl-3 sm:pl-4 text-brand-cyan">confidence</span><span class="text-brand-gray">: 0.98</span><br>
+<span class="text-brand-gray">});</span>
+</div>
+<button class="w-full py-2.5 sm:py-3 rounded-lg btn-secondary font-medium flex items-center justify-center gap-2 hoverable text-sm" onclick="openKeyModal('poly')">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+<span>Introducir Clave</span>
+</button>
+</div>
+</div>
+<!-- 3. AVATAR GENERATOR -->
+<div class="product-card reveal delay-300" id="card-avatar">
+<div class="product-badge" id="badge-avatar">
+<span class="badge-dot"></span>
+<span>BLOQUEADO</span>
+</div>
+<div class="product-image-container">
+<div class="image-glow"></div>
+<div class="product-vignette"></div>
+<div class="lock-overlay" id="lock-overlay-avatar">
+<svg class="w-12 h-12 sm:w-16 sm:h-16 text-brand-cyan/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+</svg>
+</div>
+<img src="https://image.qwenlm.ai/public_source/b001aedb-7ea8-4f99-b814-ee9def08a16e/1e6144302-b4a7-4310-8d35-dd45f96879d3.png" alt="Synthetic Avatar" class="product-image" loading="lazy">
+<div class="absolute top-3 right-3 sm:top-4 sm:right-4 glass-panel px-2 sm:px-3 py-1 rounded-lg text-xs font-mono text-brand-cyan border-brand-cyan/20" style="z-index:25;">SYNTH_GEN_V3</div>
+</div>
+<div class="p-4 sm:p-6">
+<h3 class="font-display text-xl sm:text-2xl font-bold mb-2" style="color: #e3f2fd;">Synthetic Avatar</h3>
+<p class="text-brand-gray text-sm mb-4 sm:mb-6">Generación de identidades digitales procedurales para entornos VR/AR.</p>
+<div class="bg-brand-navy/50 rounded-lg p-3 sm:p-4 font-mono text-xs border border-white/5 mb-4 sm:mb-6 overflow-x-auto">
+<span class="text-brand-cyan">const</span> <span class="text-brand-gray">avatar = </span><span class="text-brand-cyan">new</span> <span class="text-brand-gray">SynthFace({</span><br>
+<span class="pl-3 sm:pl-4 text-brand-cyan">style</span><span class="text-brand-gray">: </span><span class="text-brand-cyan">'cyberpunk'</span><span class="text-brand-gray">,</span><br>
+<span class="pl-3 sm:pl-4 text-brand-cyan">resolution</span><span class="text-brand-gray">: </span><span class="text-brand-cyan">'8K'</span><br>
+<span class="text-brand-gray">});</span>
+</div>
+<button class="w-full py-2.5 sm:py-3 rounded-lg btn-secondary font-medium flex items-center justify-center gap-2 hoverable text-sm" onclick="openKeyModal('avatar')">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+<span>Introducir Clave</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- FAQ Section -->
+<section id="faq" class="py-16 sm:py-20 md:py-24 relative z-10">
+<div class="max-w-3xl mx-auto px-4 sm:px-6">
+<div class="text-center mb-12 sm:mb-16 reveal">
+<h2 class="font-display text-3xl sm:text-4xl font-bold mb-4 shimmer-title">Preguntas Frecuentes</h2>
+<div class="section-divider"></div>
+</div>
+
+<div class="space-y-3 sm:space-y-4 reveal delay-100">
+
+<!-- FAQ 1 -->
+<div class="glass-panel rounded-lg overflow-hidden">
+<div class="p-4 sm:p-5 cursor-pointer hover:bg-brand-cyan/5 transition-colors" onclick="toggleFaqStatic(this)">
+<div class="flex justify-between items-center">
+<h3 class="font-medium text-brand-white text-sm sm:text-base">¿Qué es exactamente FocusHaven?</h3>
+<svg class="w-5 h-5 text-brand-cyan transform transition-transform duration-200 faq-chevron flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+</div>
+</div>
+<div class="hidden px-4 sm:px-5 pb-4 sm:pb-5 faq-content">
+<p class="text-brand-gray text-xs sm:text-sm leading-relaxed">
+No es una plataforma que "hace todo por ti". Es un sistema de arquitectura técnica: te hacemos las preguntas que no sabías que debías responder, estructuramos tu respuesta en especificaciones completas, y generamos prompts que tu IA favorita (GPT-4, Claude, Qwen) convierte en código. Tú necesitas tu propia API key y conocimiento básico para validar el resultado.
+</p>
+</div>
+</div>
+
+<!-- FAQ 2 -->
+<div class="glass-panel rounded-lg overflow-hidden">
+<div class="p-4 sm:p-5 cursor-pointer hover:bg-brand-cyan/5 transition-colors" onclick="toggleFaqStatic(this)">
+<div class="flex justify-between items-center">
+<h3 class="font-medium text-brand-white text-sm sm:text-base">¿Por qué necesito mi propia API key?</h3>
+<svg class="w-5 h-5 text-brand-cyan transform transition-transform duration-200 faq-chevron flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+</div>
+</div>
+<div class="hidden px-4 sm:px-5 pb-4 sm:pb-5 faq-content">
+<p class="text-brand-gray text-xs sm:text-sm leading-relaxed">
+Porque el procesamiento ocurre en tu cuenta de OpenAI, Anthropic o similar, no en nuestros servidores. Esto significa: más privacidad (tus estrategias nunca pasan por nuestra infraestructura), control total de costos (pagas directamente a tu proveedor de IA), y libertad de cambiar de proveedor cuando quieras.
+</p>
+</div>
+</div>
+
+<!-- FAQ 3 -->
+<div class="glass-panel rounded-lg overflow-hidden">
+<div class="p-4 sm:p-5 cursor-pointer hover:bg-brand-cyan/5 transition-colors" onclick="toggleFaqStatic(this)">
+<div class="flex justify-between items-center">
+<h3 class="font-medium text-brand-white text-sm sm:text-base">¿El código generado es mío?</h3>
+<svg class="w-5 h-5 text-brand-cyan transform transition-transform duration-200 faq-chevron flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+</div>
+</div>
+<div class="hidden px-4 sm:px-5 pb-4 sm:pb-5 faq-content">
+<p class="text-brand-gray text-xs sm:text-sm leading-relaxed">
+100%. Úsalo, modifícalo, véndelo, regálalo. El valor está en nuestra arquitectura de especificación, que evoluciona constantemente. Si eres desarrollador o agencia, puedes usar nuestros generadores para crear sistemas para tus clientes.
+</p>
+</div>
+</div>
+
+<!-- FAQ 4 -->
+<div class="glass-panel rounded-lg overflow-hidden">
+<div class="p-4 sm:p-5 cursor-pointer hover:bg-brand-cyan/5 transition-colors" onclick="toggleFaqStatic(this)">
+<div class="flex justify-between items-center">
+<h3 class="font-medium text-brand-white text-sm sm:text-base">¿Cómo se genera el código?</h3>
+<svg class="w-5 h-5 text-brand-cyan transform transition-transform duration-200 faq-chevron flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+</div>
+</div>
+<div class="hidden px-4 sm:px-5 pb-4 sm:pb-5 faq-content">
+<p class="text-brand-gray text-xs sm:text-sm leading-relaxed">
+En tu navegador, mediante tu conexión directa a la API de tu proveedor de IA. Nunca almacenamos tu código, tu estrategia ni tu información personal. Todo fluye: tu navegador → tu API de IA → tu dispositivo. Nuestro backend solo valida que tu clave de acceso a FocusHaven esté activa.
+</p>
+</div>
+</div>
+
+<!-- FAQ 5 -->
+<div class="glass-panel rounded-lg overflow-hidden">
+<div class="p-4 sm:p-5 cursor-pointer hover:bg-brand-cyan/5 transition-colors" onclick="toggleFaqStatic(this)">
+<div class="flex justify-between items-center">
+<h3 class="font-medium text-brand-white text-sm sm:text-base">¿Cómo funcionan las claves de acceso?</h3>
+<svg class="w-5 h-5 text-brand-cyan transform transition-transform duration-200 faq-chevron flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+</div>
+</div>
+<div class="hidden px-4 sm:px-5 pb-4 sm:pb-5 faq-content">
+<p class="text-brand-gray text-xs sm:text-sm leading-relaxed">
+Cada generador requiere una clave única para desbloquear el módulo. Contacta con soporte para obtener tu clave de acceso personal.
+</p>
+</div>
+</div>
+
+<!-- FAQ 6 -->
+<div class="glass-panel rounded-lg overflow-hidden">
+<div class="p-4 sm:p-5 cursor-pointer hover:bg-brand-cyan/5 transition-colors" onclick="toggleFaqStatic(this)">
+<div class="flex justify-between items-center">
+<h3 class="font-medium text-brand-white text-sm sm:text-base">¿Puedo modificar los bots generados?</h3>
+<svg class="w-5 h-5 text-brand-cyan transform transition-transform duration-200 faq-chevron flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+</div>
+</div>
+<div class="hidden px-4 sm:px-5 pb-4 sm:pb-5 faq-content">
+<p class="text-brand-gray text-xs sm:text-sm leading-relaxed">
+Absolutamente. El código es 100% tuyo una vez generado. Puedes editarlo, compilarlo o desplegarlo en cualquier entorno que soportes.
+</p>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-16 sm:py-20 md:py-24 relative z-10">
+<div class="max-w-3xl mx-auto px-4 sm:px-6">
+<div class="glass-panel rounded-2xl p-6 sm:p-8 md:p-12 reveal">
+<div class="text-center mb-6 sm:mb-8">
+<h2 class="font-display text-2xl sm:text-3xl font-bold mb-2" style="color: #e3f2fd;">Iniciar Protocolo de Contacto</h2>
+<p class="text-brand-gray text-sm">¿Necesitas acceso empresarial o soporte técnico?</p>
+</div>
+<div class="space-y-4 sm:space-y-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+<div>
+<label class="block text-xs font-mono text-brand-cyan mb-2">IDENTIFICADOR</label>
+<input type="text" id="contact-name" class="w-full px-4 py-3 rounded-lg input-glass" placeholder="Tu nombre">
+</div>
+<div>
+<label class="block text-xs font-mono text-brand-cyan mb-2">FRECUENCIA</label>
+<input type="email" id="contact-email" class="w-full px-4 py-3 rounded-lg input-glass" placeholder="email@ejemplo.com">
+</div>
+</div>
+<div>
+<label class="block text-xs font-mono text-brand-cyan mb-2">DATOS DE TRANSMISIÓN</label>
+<textarea id="contact-message" class="w-full px-4 py-3 rounded-lg input-glass h-28 sm:h-32" placeholder="Escribe tu mensaje aquí..."></textarea>
+</div>
+<button onclick="submitContact()" class="w-full btn-primary py-3 sm:py-4 rounded-lg font-medium hoverable text-sm sm:text-base">
+Transmitir Datos
+</button>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Footer -->
+<footer class="py-10 sm:py-12 border-t border-white/5 relative z-10 bg-brand-dark">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6">
+<div class="text-center sm:text-left">
+<h3 class="font-display font-bold text-lg sm:text-xl tracking-tighter" style="color: #e3f2fd;">
+FOCUS<span style="color: #4fc3f7;">HAVEN</span>LABS
+</h3>
+<p class="text-xs text-brand-gray mt-2">© 2024 FocusHaven Labs. Todos los derechos reservados.</p>
+</div>
+<div class="flex space-x-4 sm:space-x-6">
+<a href="#" class="text-brand-gray hover:text-brand-cyan transition-colors hoverable" aria-label="Twitter">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+</a>
+<a href="#" class="text-brand-gray hover:text-brand-cyan transition-colors hoverable" aria-label="GitHub">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+</a>
+</div>
+</div>
+</footer>
+
+<!-- Key Modal -->
+<div id="key-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+<div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeKeyModal()"></div>
+<div class="glass-modal relative w-full max-w-md p-6 sm:p-8 rounded-2xl mx-4 max-h-[90vh] overflow-y-auto">
+<button onclick="closeKeyModal()" class="absolute top-4 right-4 text-brand-gray hover:text-white transition-colors hoverable p-2" aria-label="Cerrar">
+<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+</button>
+<div class="text-center mb-6 sm:mb-8">
+<div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-brand-cyan/10 border border-brand-cyan/30 flex items-center justify-center mx-auto mb-4">
+<svg class="w-7 h-7 sm:w-8 sm:h-8 text-brand-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+</div>
+<h3 class="font-display text-xl sm:text-2xl font-bold mb-2" style="color: #e3f2fd;">Autenticación Requerida</h3>
+<p class="text-brand-gray text-sm">Introduce tu clave de acceso para el módulo <span id="modal-module-name" class="text-brand-cyan font-mono"></span></p>
+</div>
+<div class="space-y-4">
+<input type="text" id="key-input" class="w-full px-4 py-3 rounded-lg input-glass text-center font-mono tracking-widest" placeholder="INTRODUCIR CLAVE" autocomplete="off">
+<div id="key-status" class="key-status pending hidden">
+<div class="spinner w-4 h-4 border-2"></div>
+<span>Verificando...</span>
+</div>
+<button onclick="validateKey()" class="w-full btn-primary py-3 rounded-lg font-medium hoverable text-sm sm:text-base">
+Desbloquear Módulo
+</button>
+<p class="text-xs text-center text-brand-gray mt-4">
+¿No tienes una clave? <span class="text-brand-cyan cursor-pointer hover:underline hoverable" onclick="closeKeyModal(); document.getElementById('contact').scrollIntoView({behavior: 'smooth'});">Contacta con soporte</span>
+</p>
+</div>
+</div>
+</div>
+
+<!-- Generation Modal -->
+<div id="gen-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+<div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeGenModal()"></div>
+<div class="generation-window relative w-full max-w-4xl p-4 sm:p-6 rounded-2xl h-[85vh] sm:h-[80vh] flex flex-col mx-4 max-h-[90vh]">
+<div class="flex justify-between items-center mb-4 sm:mb-6 border-b border-white/10 pb-4">
+<div class="pr-4">
+<h3 class="font-display text-lg sm:text-xl font-bold" style="color: #e3f2fd;">Consola de Generación</h3>
+<p class="text-xs text-brand-gray font-mono hidden sm:block">MÓDULO: <span id="gen-module-name" class="text-brand-cyan"></span> // ESTADO: ACTIVO</p>
+</div>
+<button onclick="closeGenModal()" class="text-brand-gray hover:text-white transition-colors hoverable p-2 flex-shrink-0" aria-label="Cerrar">
+<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+</button>
+</div>
+<div class="flex-1 overflow-hidden flex flex-col min-h-0">
+<div class="output-area flex-1" id="code-output">
+<span class="text-brand-cyan">Sistema listo. Pulse "Ejecutar Generación" para iniciar.</span>
+</div>
+</div>
+<div class="mt-4 sm:mt-6 flex flex-col sm:flex-row gap-3">
+<button class="flex-1 btn-primary py-3 rounded-lg font-medium hoverable flex items-center justify-center gap-2 text-sm" onclick="simulateGeneration()">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+Ejecutar Generación
+</button>
+<button class="px-4 sm:px-6 py-3 rounded-lg border border-white/10 text-brand-gray hover:text-white hover:border-brand-cyan/30 transition-colors text-sm" onclick="copyCode()">
+Copiar Código
+</button>
+</div>
+</div>
+</div>
+
+<script>
+// ============================================
+// INIT ON PAGE LOAD
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+initStars();
+initReveal();
+initCursor();
+initNavbar();
+});
+
+// ============================================
+// TOAST NOTIFICATION
+// ============================================
+function showToast(message, type = 'success') {
+const toast = document.getElementById('toast');
+const toastMessage = document.getElementById('toast-message');
+if (toast && toastMessage) {
+toastMessage.textContent = message;
+toast.classList.add('show', type);
+setTimeout(function() {
+toast.classList.remove('show', type);
+}, 3000);
+}
+}
+
+// ============================================
+// CURSOR
+// ============================================
+function initCursor() {
+// Only init cursor on non-touch devices
+if (window.matchMedia('(pointer: fine)').matches) {
+const cursorEl = document.getElementById('cursor');
+if (cursorEl) {
+document.addEventListener('mousemove', function(e) {
+cursorEl.style.left = e.clientX + 'px';
+cursorEl.style.top = e.clientY + 'px';
+});
+document.querySelectorAll('.hoverable').forEach(function(el) {
+el.addEventListener('mouseenter', function() {
+cursorEl.classList.add('hovered');
+});
+el.addEventListener('mouseleave', function() {
+cursorEl.classList.remove('hovered');
+});
+});
+}
+}
+}
+
+// ============================================
+// NAVBAR SCROLL EFFECT
+// ============================================
+function initNavbar() {
+const navbar = document.getElementById('navbar');
+if (navbar) {
+window.addEventListener('scroll', function() {
+if (window.scrollY > 50) {
+navbar.classList.add('shadow-lg');
+navbar.style.background = 'rgba(2, 4, 10, 0.95)';
+} else {
+navbar.classList.remove('shadow-lg');
+navbar.style.background = 'rgba(2, 4, 10, 0.8)';
+}
+});
+}
+}
+
+// ============================================
+// MOBILE MENU
+// ============================================
+function toggleMobileMenu() {
+const menu = document.getElementById('mobile-menu');
+if (menu) {
+menu.classList.toggle('hidden');
+}
+}
+
+// ============================================
+// STAR FIELD
+// ============================================
+function initStars() {
+const container = document.getElementById('stars-layer');
+if (!container) return;
+if (container.children.length > 0) return;
+
+// Reduce stars on mobile
+const starCount = window.innerWidth < 768 ? 100 : 180;
+
+for (let i = 0; i < starCount; i++) {
+const star = document.createElement('div');
+star.classList.add('star');
+const sizeRoll = Math.random();
+if (sizeRoll < 0.55) {
+star.classList.add('tiny');
+} else if (sizeRoll < 0.88) {
+star.classList.add('small');
+} else {
+star.classList.add('medium');
+}
+if (Math.random() < 0.12) {
+star.classList.add('bright');
+}
+star.style.left = Math.random() * 100 + '%';
+star.style.top = Math.random() * 100 + '%';
+star.style.animationDelay = (Math.random() * 6) + 's';
+star.style.animationDuration = (Math.random() * 4 + 2) + 's';
+container.appendChild(star);
+setTimeout(function() {
+star.classList.add('visible');
+}, Math.random() * 2500);
+}
+}
+
+// ============================================
+// SCROLL REVEAL
+// ============================================
+function initReveal() {
+const reveals = document.querySelectorAll('.reveal');
+function revealOnScroll() {
+const windowHeight = window.innerHeight;
+const elementVisible = 150;
+reveals.forEach(function(reveal) {
+const elementTop = reveal.getBoundingClientRect().top;
+if (elementTop < windowHeight - elementVisible) {
+reveal.classList.add('active');
+}
+});
+}
+window.addEventListener('scroll', revealOnScroll);
+revealOnScroll();
+}
+
+// ============================================
+// FAQ - STATIC IMPLEMENTATION
+// ============================================
+function toggleFaqStatic(element) {
+const container = element.parentElement;
+const content = container.querySelector('.faq-content');
+const chevron = container.querySelector('.faq-chevron');
+const isHidden = content.classList.contains('hidden');
+
+// Cerrar todos los demás
+document.querySelectorAll('.faq-content').forEach(function(el) {
+el.classList.add('hidden');
+});
+document.querySelectorAll('.faq-chevron').forEach(function(el) {
+el.classList.remove('rotate-180');
+});
+
+// Abrir el actual si estaba cerrado
+if (isHidden) {
+content.classList.remove('hidden');
+chevron.classList.add('rotate-180');
+}
+}
+
+// ============================================
+// MODAL LOGIC
+// ============================================
+let currentModule = '';
+const MASTER_KEY = 'Lucia0981';
+const MODULE_KEYS = {
+'forex': 'FOREX-ALPHA-77',
+'poly': 'POLY-BETA-99',
+'avatar': 'AVATAR-GAMMA-11'
+};
+
+function openKeyModal(module) {
+currentModule = module;
+const names = {
+'forex': 'Forex/Crypto Bot',
+'poly': 'Polymarket AI',
+'avatar': 'Synthetic Avatar'
+};
+const moduleNameEl = document.getElementById('modal-module-name');
+const keyInput = document.getElementById('key-input');
+const keyStatus = document.getElementById('key-status');
+const keyModal = document.getElementById('key-modal');
+if (moduleNameEl) moduleNameEl.textContent = names[module];
+if (keyInput) keyInput.value = '';
+if (keyStatus) {
+keyStatus.classList.add('hidden');
+keyStatus.classList.remove('valid', 'invalid', 'pending');
+}
+if (keyModal) keyModal.classList.remove('hidden');
+document.body.style.overflow = 'hidden';
+setTimeout(function() {
+if (keyInput) keyInput.focus();
+}, 100);
+}
+
+function closeKeyModal() {
+const keyModal = document.getElementById('key-modal');
+if (keyModal) keyModal.classList.add('hidden');
+document.body.style.overflow = '';
+}
+
+function validateKey() {
+const input = document.getElementById('key-input').value.trim();
+const statusEl = document.getElementById('key-status');
+if (!statusEl) return;
+statusEl.classList.remove('hidden', 'valid', 'invalid', 'pending');
+statusEl.classList.add('pending');
+statusEl.innerHTML = '<div class="spinner w-4 h-4 border-2"></div><span>Verificando...</span>';
+setTimeout(function() {
+if (input === MASTER_KEY || input === MODULE_KEYS[currentModule]) {
+statusEl.classList.remove('pending');
+statusEl.classList.add('valid');
+statusEl.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Acceso Concedido</span>';
+setTimeout(function() {
+unlockModule(currentModule);
+closeKeyModal();
+openGenModal(currentModule);
+}, 1000);
+} else {
+statusEl.classList.remove('pending');
+statusEl.classList.add('invalid');
+statusEl.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg><span>Clave Inválida</span>';
+showToast('Clave inválida. Contacta con soporte.', 'error');
+}
+}, 1500);
+}
+
+function unlockModule(module) {
+const card = document.getElementById('card-' + module);
+const badge = document.getElementById('badge-' + module);
+const overlay = document.getElementById('lock-overlay-' + module);
+if (card) card.classList.add('unlocked');
+if (badge) badge.innerHTML = '<span class="badge-dot" style="background:#4ade80;box-shadow:0 0 8px #4ade80;"></span><span style="color:#4ade80;">ACTIVO</span>';
+if (overlay) {
+overlay.style.opacity = '0';
+overlay.style.pointerEvents = 'none';
+}
+showToast('Módulo desbloqueado exitosamente');
+}
+
+// ============================================
+// GENERATION SIMULATION
+// ============================================
+function openGenModal(module) {
+const names = {
+'forex': 'FOREX_BOT_GEN',
+'poly': 'POLY_PREDICT_AI',
+'avatar': 'SYNTH_AVATAR_V3'
+};
+const moduleNameEl = document.getElementById('gen-module-name');
+const codeOutput = document.getElementById('code-output');
+const genModal = document.getElementById('gen-modal');
+if (moduleNameEl) moduleNameEl.textContent = names[module];
+if (codeOutput) codeOutput.innerHTML = '<span class="text-brand-cyan">Sistema listo. Pulse "Ejecutar Generación" para iniciar.</span>';
+if (genModal) {
+genModal.classList.remove('hidden');
+document.body.style.overflow = 'hidden';
+}
+}
+
+function closeGenModal() {
+const genModal = document.getElementById('gen-modal');
+if (genModal) {
+genModal.classList.add('hidden');
+document.body.style.overflow = '';
+}
+}
+
+function simulateGeneration() {
+const output = document.getElementById('code-output');
+if (!output) return;
+output.innerHTML = '';
+const lines = [
+{ text: 'Initializing core modules...', color: '' },
+{ text: 'Loading neural weights [====================] 100%', color: '' },
+{ text: 'Analyzing market patterns...', color: '' },
+{ text: 'Optimizing algorithm structure...', color: '' },
+{ text: 'Generating source code...', color: '' },
+{ text: 'Compilation successful.', color: 'text-brand-cyan' },
+{ text: '', color: '' },
+{ text: '// GENERATED CODE OUTPUT', color: 'text-brand-gray' },
+{ text: 'import { TradingEngine } from "@focushaven/core";', color: '' },
+{ text: '', color: '' },
+{ text: 'const bot = new TradingEngine({', color: '' },
+{ text: '  strategy: "adaptive_momentum",', color: '' },
+{ text: '  riskLevel: 0.05,', color: '' },
+{ text: '  apiEndpoint: "wss://secure.focushaven.io"', color: '' },
+{ text: '});', color: '' },
+{ text: '', color: '' },
+{ text: 'bot.on("signal", (data) => {', color: '' },
+{ text: '  console.log("New opportunity detected:", data);', color: '' },
+{ text: '  bot.executeTrade(data);', color: '' },
+{ text: '});', color: '' },
+{ text: '', color: '' },
+{ text: 'bot.start();', color: 'text-brand-cyan' }
+];
+let lineIndex = 0;
+function addLine() {
+if (lineIndex >= lines.length) {
+showToast('Generación completada');
+return;
+}
+const line = lines[lineIndex];
+const span = document.createElement('span');
+span.textContent = line.text;
+if (line.color) span.classList.add(line.color);
+span.style.display = 'block';
+output.appendChild(span);
+output.scrollTop = output.scrollHeight;
+lineIndex++;
+setTimeout(addLine, 200);
+}
+addLine();
+}
+
+function copyCode() {
+const code = `import { TradingEngine } from "@focushaven/core";
+const bot = new TradingEngine({
+  strategy: "adaptive_momentum",
+  riskLevel: 0.05,
+  apiEndpoint: "wss://secure.focushaven.io"
+});
+bot.on("signal", (data) => {
+  console.log("New opportunity detected:", data);
+  bot.executeTrade(data);
+});
+bot.start();`;
+navigator.clipboard.writeText(code).then(function() {
+showToast('Código copiado al portapapeles');
+}).catch(function() {
+showToast('Código copiado al portapapeles');
+});
+}
+
+// ============================================
+// CONTACT FORM
+// ============================================
+function submitContact() {
+const name = document.getElementById('contact-name').value;
+const email = document.getElementById('contact-email').value;
+const message = document.getElementById('contact-message').value;
+if (!name || !email || !message) {
+showToast('Por favor completa todos los campos', 'error');
+return;
+}
+showToast('Mensaje encriptado enviado correctamente');
+document.getElementById('contact-name').value = '';
+document.getElementById('contact-email').value = '';
+document.getElementById('contact-message').value = '';
+}
+
+// ============================================
+// KEYBOARD HANDLERS
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+const keyInput = document.getElementById('key-input');
+if (keyInput) {
+keyInput.addEventListener('keypress', function(e) {
+if (e.key === 'Enter') {
+validateKey();
+}
+});
+}
+document.addEventListener('keydown', function(e) {
+if (e.key === 'Escape') {
+closeKeyModal();
+closeGenModal();
+}
+});
+});
+
+// Handle resize for star field optimization
+let resizeTimer;
+window.addEventListener('resize', function() {
+clearTimeout(resizeTimer);
+resizeTimer = setTimeout(function() {
+const container = document.getElementById('stars-layer');
+if (container) {
+container.innerHTML = '';
+initStars();
+}
+}, 250);
+});
+</script>
+</body>
+</html>
+
